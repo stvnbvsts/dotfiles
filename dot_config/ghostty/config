@@ -1,0 +1,10 @@
+font-family = "Menlo"
+font-size = 15
+theme = light:Rose Pine Dawn,dark:Snazzy
+background-opacity = 0.9
+
+keybind = alt+arrow_right=esc:F
+keybind = option+backspace=text:\x17
+
+window-height = 60
+window-width = 260
