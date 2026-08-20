@@ -17,9 +17,11 @@ brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile"
 # Oh My Zsh isn't a Homebrew package, so install it here if missing.
 # RUNZSH=no keeps this script from dropping into an interactive zsh shell.
 # CHSH=no: we set the default shell ourselves below, after checking it's needed.
+# KEEP_ZSHRC=yes: skip the "overwrite .zshrc?" prompt — chezmoi overwrites
+# ~/.zshrc with dot_zshrc right after this script runs anyway.
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   echo "Installing Oh My Zsh..."
-  RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
 # Make Homebrew's zsh the default shell if it isn't already.
