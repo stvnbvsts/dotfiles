@@ -12,7 +12,7 @@ if ! command -v brew >/dev/null 2>&1; then
 {{ end -}}
 fi
 
-brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile"
+brew bundle --adopt --file="{{ .chezmoi.sourceDir }}/Brewfile"
 
 # Oh My Zsh isn't a Homebrew package, so install it here if missing.
 # RUNZSH=no keeps this script from dropping into an interactive zsh shell.
