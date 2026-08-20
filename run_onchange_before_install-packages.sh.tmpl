@@ -1,0 +1,38 @@
+#!/bin/bash
+# Brewfile hash: {{ include "Brewfile" | sha256sum }}
+set -euo pipefail
+
+if ! command -v brew >/dev/null 2>&1; then
+  echo "Homebrew not found, installing..."
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+{{ if eq .chezmoi.arch "arm64" -}}
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+{{ else -}}
+  eval "$(/usr/local/bin/brew shellenv)"
+{{ end -}}
+fi
+
+brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile"
+
+# Oh My Zsh isn't a Homebrew package, so install it here if missing.
+# RUNZSH=no keeps this script from dropping into an interactive zsh shell.
+# CHSH=no: we set the default shell ourselves below, after checking it's needed.
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "Installing Oh My Zsh..."
+  RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
+
+# Make Homebrew's zsh the default shell if it isn't already.
+BREW_ZSH="$(brew --prefix)/bin/zsh"
+CURRENT_SHELL="$(dscl . -read "/Users/$(whoami)" UserShell 2>/dev/null | awk '{print $2}')"
+if [ "$CURRENT_SHELL" != "$BREW_ZSH" ]; then
+  if ! grep -qx "$BREW_ZSH" /etc/shells; then
+    echo "Adding $BREW_ZSH to /etc/shells (requires sudo)..."
+    echo "$BREW_ZSH" | sudo tee -a /etc/shells >/dev/null
+  fi
+  # dscl (via sudo) sets the shell directly in the directory service record,
+  # avoiding `chsh`'s separate interactive auth prompt, which has been
+  # observed to hang in Terminal.app.
+  echo "Setting $BREW_ZSH as default shell (requires sudo)..."
+  sudo dscl . -create "/Users/$(whoami)" UserShell "$BREW_ZSH"
+fi

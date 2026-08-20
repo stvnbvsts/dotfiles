@@ -4,7 +4,7 @@ My personal [chezmoi](https://www.chezmoi.io/) repo: dotfiles and machine setup,
 
 ## Contents
 
-- `dot_config/ghostty/config` → `~/.config/ghostty/config`
+- `dot_config/ghostty/config.ghostty` → `~/.config/ghostty/config.ghostty`
 
 ## 1. Bootstrap a new machine
 
