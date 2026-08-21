@@ -1,5 +1,6 @@
 brew "zsh"
 brew "zellij"
+brew "btop"
 
 cask "arc"
 cask "visual-studio-code"
