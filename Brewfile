@@ -5,6 +5,8 @@ brew "railway"
 brew "node"
 brew "watchman"
 brew "cocoapods"
+brew "zsh-syntax-highlighting"
+brew "zsh-autosuggestions"
 
 cask "arc"
 cask "visual-studio-code"
