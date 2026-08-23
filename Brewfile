@@ -4,6 +4,7 @@ brew "btop"
 brew "railway"
 brew "node"
 brew "watchman"
+brew "cocoapods"
 
 cask "arc"
 cask "visual-studio-code"
