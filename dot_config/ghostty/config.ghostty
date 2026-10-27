@@ -1,6 +1,6 @@
 font-family = "Menlo"
 font-size = 14
-theme = light:Belafonte Day,dark:Belafonte Night
+theme = light:Aizen Light,dark:Aizen Dark
 background-opacity = 0.9
 
 keybind = alt+arrow_right=esc:F
