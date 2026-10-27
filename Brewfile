@@ -10,6 +10,7 @@ brew "zsh-syntax-highlighting"
 brew "zsh-autosuggestions"
 brew "yt-dlp"
 brew "ffmpeg"
+brew "btop"
 
 cask "arc"
 cask "visual-studio-code"
