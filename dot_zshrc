@@ -88,6 +88,11 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
+# General long view EZA ls command
+alias ll="eza --icons --long --header --git"
+# Eza equivalent of 'ls -lrt' (sorts by modified time, oldest first)
+alias lt="eza --icons --long --header --git --sort=modified"
+
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
