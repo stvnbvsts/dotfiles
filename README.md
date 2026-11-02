@@ -11,7 +11,7 @@ My personal [chezmoi](https://www.chezmoi.io/) repo: dotfiles and machine setup,
 Install chezmoi and apply this repo's dotfiles in one step:
 
 ```sh
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply stvnbvsts
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply --no-pager stvnbvsts
 ```
 
 This:
@@ -24,14 +24,27 @@ If chezmoi is already installed, you can do the same in two steps:
 ```sh
 chezmoi init stvnbvsts   # clone the repo, don't apply yet
 chezmoi diff             # review what would change
-chezmoi apply            # write the files
+chezmoi apply --no-pager # install packages and write the files
 ```
 
 Using `git@github.com:...` instead of the GitHub username also works if you prefer SSH.
 
 ### Package installation
 
-This repo doesn't yet manage package installs (Homebrew, casks, etc.) — right now it's dotfiles only. When that's added, it'll be via a `run_onchange_` script in the source dir (e.g. a `Brewfile` applied with `brew bundle`, or an Ansible playbook), which chezmoi runs automatically whenever the script or its inputs change — no separate step required beyond `chezmoi apply`.
+`run_onchange_before_install-packages.sh.tmpl` installs Homebrew if missing, runs `brew bundle --no-upgrade` using `Brewfile`, installs Oh My Zsh if missing, and selects Homebrew's zsh as the login shell. It runs before writing dotfiles whenever the rendered script or Brewfile changes. Cask installation and login-shell setup can request your macOS administrator password.
+
+### Password prompt stuck at “Waiting for data…”
+
+“Waiting for data... (^X or interrupt to abort)” is a message from the `less` pager. If it appears alongside `Password:`, the pager and an installer or `sudo` prompt may be competing for terminal input. Oh My Zsh defaults `PAGER` to `less`, so changing terminal apps does not necessarily avoid it.
+
+Stop the stuck invocation with Ctrl-C (if still in `less`, press `q` to exit it), then run these commands separately in the same terminal:
+
+```sh
+sudo -v
+chezmoi apply --no-pager -v
+```
+
+Password entry normally shows no characters. `--no-pager` leaves interactive authentication enabled while disabling the pager. Do not run chezmoi itself with `sudo`. If this still stalls, note the last installation step printed by the verbose command. Chezmoi's upstream tracker also documents a [pager/prompt deadlock](https://github.com/twpayne/chezmoi/issues/4874).
 
 ## 2. Chezmoi handbook
 
@@ -51,7 +64,7 @@ The golden rule: **edit through chezmoi, never edit the destination file directl
 ```sh
 chezmoi edit ~/.config/ghostty/config   # opens the *source* file in $EDITOR
 chezmoi diff                            # preview what would change on disk
-chezmoi apply                           # write changes to the destination
+chezmoi apply --no-pager                # install packages and write changes
 ```
 
 If you *did* edit the real file directly (e.g. `~/.config/ghostty/config`) and want to pull that change back into the repo:
@@ -66,9 +79,9 @@ Other everyday commands:
 chezmoi cd                    # drop into a subshell inside the source dir (plain `cd`/git work here)
 chezmoi status                # what's changed, source vs. destination
 chezmoi diff                  # full diff of pending changes
-chezmoi apply -v               # apply, verbosely
+chezmoi apply --no-pager -v    # apply, verbosely, with interactive prompts
 chezmoi apply --dry-run -v     # see what *would* happen without writing anything
-chezmoi update                 # git pull + apply — use this on a machine to pick up changes made elsewhere
+chezmoi update --no-pager      # git pull + apply — pick up changes made elsewhere
 ```
 
 ### Adding a new file to be managed
